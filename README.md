@@ -8,36 +8,58 @@ Not affiliated with or endorsed by Hammerhead or Garmin.
 
 ### Light mode
 
-The field adapts to its size and only offers the modes your light reports.
+The field adapts to its size and only offers the modes your light reports. The highlight and the label change once the light reports the new mode, so they show what the light is really doing.
 
-| Full display | Half display | Small |
+| Full display | Half display | One third |
 |---|---|---|
-| ![All modes stacked](docs/screenshots/light-full.png) | ![All modes side by side](docs/screenshots/light-half.png) | ![Current mode](docs/screenshots/light-small.png) |
-| Tap a mode to set it | Tap a mode to set it | Tap to switch to the next mode |
+| ![All modes stacked](docs/screenshots/light-full.png) | ![All modes side by side](docs/screenshots/light-half.png) | ![Current mode, wide](docs/screenshots/light-wide.png) |
+| Tap a mode to set it | Tap a mode to set it | Tap for the next mode |
 
-The highlight and the small field's label change once the light reports the new mode, so they show what the light is really doing. The yellow bar in the screenshots is the Karoo's Auto-Pause banner, and the half-display screenshot was taken in the page editor.
+| One row of a dense page | Half-width tile |
+|---|---|
+| ![Current mode, slim](docs/screenshots/light-slim.png) | ![Current mode, tile](docs/screenshots/light-tile.png) |
+| Tap for the next mode | Tap for the next mode |
+
+The screenshots show the Karoo's pre-ride screen, whose back and start buttons cover the bottom corners. They disappear once a ride starts.
 
 ### Varia battery
 
-![Battery status](docs/screenshots/battery.png)
+The Varia reports a status level, not a percentage. While it is off or out of range, the field shows the last level the Karoo saved.
 
-Shows Full, High, Medium, Low or Critical. The Varia reports a status level, not a percentage. While the Varia is off or out of range, the field shows the last level the Karoo saved.
+| Level | Screenshot |
+|---|---|
+| Full | ![Full](docs/screenshots/battery-full.png) |
+| High | ![High](docs/screenshots/battery-high.png) |
+| Medium | ![Medium](docs/screenshots/battery-medium.png) |
+| Low | ![Low](docs/screenshots/battery-low.png) |
+| Critical | ![Critical](docs/screenshots/battery-critical.png) |
+| Unknown | ![Unknown](docs/screenshots/battery-unknown.png) |
+
+These levels were simulated for the screenshots, on a Karoo set to German. Labels follow the Karoo's language, English or German.
 
 ## Supported devices
 
-| Device | Status |
+**Lights**
+
+| Light | Status | Notes |
+|---|---|---|
+| Varia RTL515 | Tested | Firmware 3.36, with Max. solid, Peloton, Night flash, Day flash and Off |
+| Varia RearVue 820 | Not tested | Garmin documents the same modes as the RTL515 |
+| Varia RTL516, eRTL616 | Not tested | Garmin documents only Solid and Standby, so the field should offer just those |
+| Other Varia taillights, other ANT+ bike lights | Not tested | May work, but mode names can be wrong |
+
+**Head units**
+
+| Head unit | Status |
 |---|---|
-| Karoo 3 with Varia RTL515 (firmware 3.36) | Tested |
-| Varia RearVue 820 | Untested. Garmin documents the same modes as the RTL515 |
-| Varia RTL516, eRTL616 | Untested. Garmin documents only Solid and Standby, so the field should offer just those |
-| Other Varia taillights and other ANT+ bike lights | Untested. May work, but mode names can be wrong |
-| Other Karoo models | Untested |
+| Karoo 3 | Tested |
+| Other Karoo models | Not tested |
 
 Requirements and limits:
 
 - The light must be paired over ANT+. If several lights are paired, the field controls the first one.
 - Mode names are assigned by the ANT+ mode number: 4 Max. solid, 5 Peloton, 6 Night flash, 7 Day flash, 0 Off. They were confirmed on the RTL515 only, and any other mode shows its raw name with a generic icon.
-- Garmin says an RTL515/RTL516 in Standby does not detect vehicles. Whether Off from this field does the same is untested, so check that your radar still detects vehicles before relying on it.
+- Garmin says an RTL515/RTL516 in Standby does not detect vehicles. Whether Off from this field does the same is not tested, so check that your radar still detects vehicles before relying on it.
 
 ## Install
 
