@@ -2,4 +2,11 @@
 <resources>
     <string name="field_name">Lichtmodus</string>
     <string name="field_description">Steuert das Varia-Licht. Große Felder zeigen alle Modi, kleine Felder wechseln beim Antippen zum nächsten Modus.</string>
+    <string name="battery_name">Varia-Akku</string>
+    <string name="battery_description">Zeigt den Akkustatus der Varia an.</string>
+    <string name="battery_new">Voll</string>
+    <string name="battery_good">Hoch</string>
+    <string name="battery_ok">Mittel</string>
+    <string name="battery_low">Niedrig</string>
+    <string name="battery_critical">Kritisch</string>
 </resources>

@@ -9,4 +9,11 @@
     <string name="mode_night_flash">Night flash</string>
     <string name="mode_day_flash">Day flash</string>
     <string name="mode_off">Off</string>
+    <string name="battery_name">Varia battery</string>
+    <string name="battery_description">Shows the battery status of the Varia.</string>
+    <string name="battery_new">Full</string>
+    <string name="battery_good">High</string>
+    <string name="battery_ok">Medium</string>
+    <string name="battery_low">Low</string>
+    <string name="battery_critical">Critical</string>
 </resources>

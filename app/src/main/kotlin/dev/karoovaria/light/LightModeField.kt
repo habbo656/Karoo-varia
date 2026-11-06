@@ -18,7 +18,7 @@ private const val GRID_FULL = 60
 private const val GRID_HALF = 30
 private const val GRID_STACKED = 45
 
-private val COLOR_IDLE = Color.parseColor("#FF2B2B2B")
+internal val COLOR_FIELD = Color.parseColor("#FF2B2B2B")
 private val PREVIEW_STATE = LightState("STEADY4", listOf("OFF", "STEADY4", "STEADY5", "SLOW_FLASH", "FAST_FLASH"))
 
 class LightModeField(extension: String) : DataTypeImpl(extension, "light-mode") {
@@ -77,7 +77,7 @@ class LightModeField(extension: String) : DataTypeImpl(extension, "light-mode") 
 
     private fun bindMode(context: Context, views: RemoteViews, mode: String?, selected: Boolean) {
         val foreground = if (selected) Color.BLACK else Color.WHITE
-        views.setInt(R.id.item, "setBackgroundColor", if (selected) Color.WHITE else COLOR_IDLE)
+        views.setInt(R.id.item, "setBackgroundColor", if (selected) Color.WHITE else COLOR_FIELD)
         views.setImageViewResource(R.id.icon, LightModeUi.icon(mode))
         views.setInt(R.id.icon, "setColorFilter", foreground)
         views.setTextViewText(R.id.label, LightModeUi.label(context, mode))

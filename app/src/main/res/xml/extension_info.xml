@@ -10,4 +10,10 @@
         graphical="true"
         icon="@drawable/ic_light"
         typeId="light-mode" />
+    <DataType
+        description="@string/battery_description"
+        displayName="@string/battery_name"
+        graphical="true"
+        icon="@drawable/ic_battery_good"
+        typeId="battery" />
 </ExtensionInfo>
