@@ -6,7 +6,7 @@ import io.hammerhead.karooext.models.SavedDevices
 
 private const val ANT_DEVICE_TYPE_LIGHT = "35"
 
-class VariaExtension : KarooExtension("varia", "0.1") {
+class VariaExtension : KarooExtension("varia", BuildConfig.VERSION_NAME) {
     private lateinit var karooSystem: KarooSystemService
 
     override val types by lazy { listOf(LightModeField(extension), BatteryField(extension)) }
