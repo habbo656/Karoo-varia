@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Varia Light</string>
+    <string name="field_name">Light mode</string>
+    <string name="field_description">Controls the Varia light. Large fields show every mode, small fields switch to the next mode when tapped.</string>
+    <string name="mode_unknown">--</string>
+    <string name="mode_max_solid">Max. solid</string>
+    <string name="mode_peloton">Peloton</string>
+    <string name="mode_night_flash">Night flash</string>
+    <string name="mode_day_flash">Day flash</string>
+    <string name="mode_off">Off</string>
+</resources>

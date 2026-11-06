@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="field_name">Lichtmodus</string>
+    <string name="field_description">Steuert das Varia-Licht. Große Felder zeigen alle Modi, kleine Felder wechseln beim Antippen zum nächsten Modus.</string>
+</resources>

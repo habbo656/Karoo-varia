@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExtensionInfo
+    displayName="@string/app_name"
+    icon="@drawable/ic_light"
+    id="varia"
+    scansDevices="false">
+    <DataType
+        description="@string/field_description"
+        displayName="@string/field_name"
+        graphical="true"
+        icon="@drawable/ic_light"
+        typeId="light-mode" />
+</ExtensionInfo>
