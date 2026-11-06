@@ -11,6 +11,8 @@ import io.hammerhead.karooext.models.UpdateGraphicConfig
 import io.hammerhead.karooext.models.ViewConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 // The page grid is 60 units in both directions
@@ -19,6 +21,9 @@ private const val GRID_HALF = 30
 private const val GRID_STACKED = 45
 
 internal val COLOR_FIELD = Color.parseColor("#FF2B2B2B")
+// The ride screen can drop updates sent while it is loading, so views are re-sent periodically
+internal const val VIEW_REFRESH_MS = 3000L
+
 private val PREVIEW_STATE = LightState("STEADY4", listOf("OFF", "STEADY4", "STEADY5", "SLOW_FLASH", "FAST_FLASH"))
 
 class LightModeField(extension: String) : DataTypeImpl(extension, "light-mode") {
@@ -30,8 +35,11 @@ class LightModeField(extension: String) : DataTypeImpl(extension, "light-mode") 
         }
         KarooLightClient.attach(context)
         val job = CoroutineScope(Dispatchers.Main).launch {
-            KarooLightClient.state.collect { state ->
-                emitter.updateView(render(context, config, state, interactive = true))
+            KarooLightClient.state.collectLatest { state ->
+                while (true) {
+                    emitter.updateView(render(context, config, state, interactive = true))
+                    delay(VIEW_REFRESH_MS)
+                }
             }
         }
         emitter.setCancellable {

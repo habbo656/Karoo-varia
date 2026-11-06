@@ -10,6 +10,8 @@ import io.hammerhead.karooext.models.UpdateGraphicConfig
 import io.hammerhead.karooext.models.ViewConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private val COLOR_GOOD = Color.parseColor("#FF00C853")
@@ -26,8 +28,11 @@ class BatteryField(extension: String) : DataTypeImpl(extension, "battery") {
             return
         }
         val job = CoroutineScope(Dispatchers.Main).launch {
-            VariaBattery.status.collect { status ->
-                emitter.updateView(render(context, config, status))
+            VariaBattery.status.collectLatest { status ->
+                while (true) {
+                    emitter.updateView(render(context, config, status))
+                    delay(VIEW_REFRESH_MS)
+                }
             }
         }
         emitter.setCancellable { job.cancel() }
