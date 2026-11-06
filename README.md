@@ -20,11 +20,11 @@ The field adapts to its size and only offers the modes your light reports. The h
 | ![Current mode, slim](docs/screenshots/light-slim.png) | ![Current mode, tile](docs/screenshots/light-tile.png) |
 | Tap for the next mode | Tap for the next mode |
 
-The screenshots show the Karoo's pre-ride screen, whose back and start buttons cover the bottom corners. They disappear once a ride starts.
+The small symbol in the top left corner shows the Varia's battery level. The screenshots show the Karoo's pre-ride screen, whose back and start buttons cover the bottom corners. They disappear once a ride starts.
 
 ### Varia battery
 
-The Varia reports a status level, not a percentage. While it is off or out of range, the field shows the last level the Karoo saved.
+The Varia reports a status level, not a percentage.
 
 | Level | Screenshot |
 |---|---|
@@ -36,6 +36,12 @@ The Varia reports a status level, not a percentage. While it is off or out of ra
 | Unknown | ![Unknown](docs/screenshots/battery-unknown.png) |
 
 These levels were simulated for the screenshots, on a Karoo set to German. Labels follow the Karoo's language, English or German.
+
+### Disconnected
+
+When the radar is off or out of range, both fields turn gray and show Disconnected, and the light field stops reacting to taps. They recover on their own once the Karoo finds the radar again, which can take up to about a minute.
+
+![Both fields disconnected](docs/screenshots/disconnected.png)
 
 ## Supported devices
 
@@ -59,7 +65,7 @@ Requirements and limits:
 
 - The light must be paired over ANT+. If several lights are paired, the field controls the first one.
 - Mode names are assigned by the ANT+ mode number: 4 Max. solid, 5 Peloton, 6 Night flash, 7 Day flash, 0 Off. They were confirmed on the RTL515 only, and any other mode shows its raw name with a generic icon.
-- Garmin says an RTL515/RTL516 in Standby does not detect vehicles. Whether Off from this field does the same is not tested, so check that your radar still detects vehicles before relying on it.
+- Garmin says an RTL515/RTL516 in Standby does not detect vehicles. On the tested RTL515 the radar kept sending data while the light reported Off, but detecting a vehicle in that state has not been tested, so check it before relying on it.
 
 ## Install
 

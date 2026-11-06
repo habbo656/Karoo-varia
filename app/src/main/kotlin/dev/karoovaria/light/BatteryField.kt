@@ -12,44 +12,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 private val COLOR_GOOD = Color.parseColor("#FF00C853")
 private val COLOR_OK = Color.parseColor("#FFFFD600")
 private val COLOR_LOW = Color.parseColor("#FFFF9100")
 private val COLOR_CRITICAL = Color.parseColor("#FFFF3D00")
-private val COLOR_UNKNOWN = Color.parseColor("#FF9E9E9E")
+internal val COLOR_UNKNOWN = Color.parseColor("#FF9E9E9E")
 
-class BatteryField(extension: String) : DataTypeImpl(extension, "battery") {
-    override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
-        emitter.onNext(UpdateGraphicConfig(showHeader = false))
-        if (config.preview) {
-            emitter.updateView(render(context, config, BatteryStatus.GOOD))
-            return
-        }
-        val job = CoroutineScope(Dispatchers.Main).launch {
-            VariaBattery.status.collectLatest { status ->
-                while (true) {
-                    emitter.updateView(render(context, config, status))
-                    delay(VIEW_REFRESH_MS)
-                }
-            }
-        }
-        emitter.setCancellable { job.cancel() }
-    }
-
-    private fun render(context: Context, config: ViewConfig, status: BatteryStatus?): RemoteViews {
-        val (width, height) = config.viewSize
-        val views = RemoteViews(context.packageName, if (width >= height * 2) R.layout.item_mode_wide else R.layout.item_mode_tall)
-        views.setInt(R.id.item, "setBackgroundColor", COLOR_FIELD)
-        views.setImageViewResource(R.id.icon, icon(status))
-        views.setInt(R.id.icon, "setColorFilter", color(status))
-        views.setTextViewText(R.id.label, label(context, status))
-        views.setTextColor(R.id.label, Color.WHITE)
-        return views
-    }
-
-    private fun icon(status: BatteryStatus?): Int = when (status) {
+object BatteryUi {
+    fun icon(status: BatteryStatus?): Int = when (status) {
         BatteryStatus.NEW -> R.drawable.ic_battery_new
         BatteryStatus.GOOD -> R.drawable.ic_battery_good
         BatteryStatus.OK -> R.drawable.ic_battery_ok
@@ -58,7 +31,7 @@ class BatteryField(extension: String) : DataTypeImpl(extension, "battery") {
         BatteryStatus.INVALID, null -> R.drawable.ic_battery_unknown
     }
 
-    private fun color(status: BatteryStatus?): Int = when (status) {
+    fun color(status: BatteryStatus?): Int = when (status) {
         BatteryStatus.NEW, BatteryStatus.GOOD -> COLOR_GOOD
         BatteryStatus.OK -> COLOR_OK
         BatteryStatus.LOW -> COLOR_LOW
@@ -66,7 +39,7 @@ class BatteryField(extension: String) : DataTypeImpl(extension, "battery") {
         BatteryStatus.INVALID, null -> COLOR_UNKNOWN
     }
 
-    private fun label(context: Context, status: BatteryStatus?): String = context.getString(
+    fun label(context: Context, status: BatteryStatus?): String = context.getString(
         when (status) {
             BatteryStatus.NEW -> R.string.battery_new
             BatteryStatus.GOOD -> R.string.battery_good
@@ -76,4 +49,39 @@ class BatteryField(extension: String) : DataTypeImpl(extension, "battery") {
             BatteryStatus.INVALID, null -> R.string.mode_unknown
         },
     )
+}
+
+class BatteryField(extension: String, private val radar: RadarStatus) : DataTypeImpl(extension, "battery") {
+    override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
+        emitter.onNext(UpdateGraphicConfig(showHeader = false))
+        if (config.preview) {
+            emitter.updateView(render(context, config, BatteryStatus.GOOD, connected = true))
+            return
+        }
+        radar.attach()
+        val job = CoroutineScope(Dispatchers.Main).launch {
+            combine(VariaBattery.status, radar.connected) { status, connected -> status to connected }
+                .collectLatest { (status, connected) ->
+                    while (true) {
+                        emitter.updateView(render(context, config, status, connected != false))
+                        delay(VIEW_REFRESH_MS)
+                    }
+                }
+        }
+        emitter.setCancellable {
+            job.cancel()
+            radar.detach()
+        }
+    }
+
+    private fun render(context: Context, config: ViewConfig, status: BatteryStatus?, connected: Boolean): RemoteViews {
+        val shown = status.takeIf { connected }
+        val views = FieldViews.item(context, config)
+        views.setInt(R.id.item, "setBackgroundColor", COLOR_FIELD)
+        views.setImageViewResource(R.id.icon, BatteryUi.icon(shown))
+        views.setInt(R.id.icon, "setColorFilter", BatteryUi.color(shown))
+        views.setTextViewText(R.id.label, if (connected) BatteryUi.label(context, status) else context.getString(R.string.disconnected))
+        views.setTextColor(R.id.label, if (connected) Color.WHITE else COLOR_UNKNOWN)
+        return FieldViews.withCorner(context, views, R.drawable.ic_light, if (connected) Color.WHITE else COLOR_UNKNOWN)
+    }
 }

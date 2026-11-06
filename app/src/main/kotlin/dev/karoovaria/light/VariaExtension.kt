@@ -8,8 +8,12 @@ private const val ANT_DEVICE_TYPE_LIGHT = "35"
 
 class VariaExtension : KarooExtension("varia", BuildConfig.VERSION_NAME) {
     private lateinit var karooSystem: KarooSystemService
+    private val radarStatus by lazy { RadarStatus(karooSystem) }
 
-    override val types by lazy { listOf(LightModeField(extension), BatteryField(extension)) }
+    override val types by lazy { listOf(
+            LightModeField(extension, radarStatus),
+            BatteryField(extension, radarStatus),
+        ) }
 
     override fun onCreate() {
         super.onCreate()

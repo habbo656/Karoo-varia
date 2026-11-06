@@ -7,12 +7,14 @@ import android.graphics.Color
 import android.widget.RemoteViews
 import io.hammerhead.karooext.extension.DataTypeImpl
 import io.hammerhead.karooext.internal.ViewEmitter
+import io.hammerhead.karooext.models.BatteryStatus
 import io.hammerhead.karooext.models.UpdateGraphicConfig
 import io.hammerhead.karooext.models.ViewConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 // The page grid is 60 units in both directions
@@ -26,24 +28,45 @@ internal const val VIEW_REFRESH_MS = 3000L
 
 private val PREVIEW_STATE = LightState("STEADY4", listOf("OFF", "STEADY4", "STEADY5", "SLOW_FLASH", "FAST_FLASH"))
 
-class LightModeField(extension: String) : DataTypeImpl(extension, "light-mode") {
+class LightModeField(extension: String, private val radar: RadarStatus) : DataTypeImpl(extension, "light-mode") {
     override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
         emitter.onNext(UpdateGraphicConfig(showHeader = false))
         if (config.preview) {
-            emitter.updateView(render(context, config, PREVIEW_STATE, interactive = false))
+            emitter.updateView(
+                FieldViews.withCorner(
+                    context,
+                    render(context, config, PREVIEW_STATE, interactive = false),
+                    BatteryUi.icon(BatteryStatus.GOOD),
+                    BatteryUi.color(BatteryStatus.GOOD),
+                ),
+            )
             return
         }
         KarooLightClient.attach(context)
+        radar.attach()
         val job = CoroutineScope(Dispatchers.Main).launch {
-            KarooLightClient.state.collectLatest { state ->
+            combine(KarooLightClient.state, VariaBattery.status, radar.connected) { state, battery, connected ->
+                Triple(state, battery, connected)
+            }.collectLatest { (state, battery, connected) ->
                 while (true) {
-                    emitter.updateView(render(context, config, state, interactive = true))
+                    val views = if (connected == false) {
+                        renderDisconnected(context, config)
+                    } else {
+                        FieldViews.withCorner(
+                            context,
+                            render(context, config, state, interactive = true),
+                            BatteryUi.icon(battery),
+                            BatteryUi.color(battery),
+                        )
+                    }
+                    emitter.updateView(views)
                     delay(VIEW_REFRESH_MS)
                 }
             }
         }
         emitter.setCancellable {
             job.cancel()
+            radar.detach()
             KarooLightClient.detach(context)
         }
     }
@@ -74,12 +97,21 @@ class LightModeField(extension: String) : DataTypeImpl(extension, "light-mode") 
     }
 
     private fun renderToggle(context: Context, config: ViewConfig, state: LightState, interactive: Boolean): RemoteViews {
-        val (width, height) = config.viewSize
-        val views = RemoteViews(context.packageName, if (width >= height * 2) R.layout.item_mode_wide else R.layout.item_mode_tall)
+        val views = FieldViews.item(context, config)
         bindMode(context, views, state.mode, selected = false)
         if (interactive) {
             views.setOnClickPendingIntent(R.id.item, tapIntent(context, 0, null))
         }
+        return views
+    }
+
+    private fun renderDisconnected(context: Context, config: ViewConfig): RemoteViews {
+        val views = FieldViews.item(context, config)
+        views.setInt(R.id.item, "setBackgroundColor", COLOR_FIELD)
+        views.setImageViewResource(R.id.icon, R.drawable.ic_mode_off)
+        views.setInt(R.id.icon, "setColorFilter", COLOR_UNKNOWN)
+        views.setTextViewText(R.id.label, context.getString(R.string.disconnected))
+        views.setTextColor(R.id.label, COLOR_UNKNOWN)
         return views
     }
 

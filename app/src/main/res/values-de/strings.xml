@@ -9,4 +9,5 @@
     <string name="battery_ok">Mittel</string>
     <string name="battery_low">Niedrig</string>
     <string name="battery_critical">Kritisch</string>
+    <string name="disconnected">Getrennt</string>
 </resources>
