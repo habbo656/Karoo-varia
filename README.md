@@ -27,8 +27,8 @@ Shows Full, High, Medium, Low or Critical. The Varia reports a status level, not
 
 | Device | Status |
 |---|---|
-| Karoo 3 with a Varia reporting model number 3592, firmware 3.36 | Tested |
-| Varia RTL515, RearVue 820 | Untested. Garmin documents the same modes as the tested light |
+| Karoo 3 with Varia RTL515 (firmware 3.36) | Tested |
+| Varia RearVue 820 | Untested. Garmin documents the same modes as the RTL515 |
 | Varia RTL516, eRTL616 | Untested. Garmin documents only Solid and Standby, so the field should offer just those |
 | Other Varia taillights and other ANT+ bike lights | Untested. May work, but mode names can be wrong |
 | Other Karoo models | Untested |
@@ -36,8 +36,8 @@ Shows Full, High, Medium, Low or Critical. The Varia reports a status level, not
 Requirements and limits:
 
 - The light must be paired over ANT+. If several lights are paired, the field controls the first one.
-- Mode names are assigned by the ANT+ mode number: 4 Max. solid, 5 Peloton, 6 Night flash, 7 Day flash, 0 Off. They were confirmed on the tested light only, and any other mode shows its raw name with a generic icon.
-- Garmin says an RTL515/RTL516 in Standby does not detect vehicles. Whether Off from this field does the same on those models is untested, so check that your radar still works before relying on it.
+- Mode names are assigned by the ANT+ mode number: 4 Max. solid, 5 Peloton, 6 Night flash, 7 Day flash, 0 Off. They were confirmed on the RTL515 only, and any other mode shows its raw name with a generic icon.
+- Garmin says an RTL515/RTL516 in Standby does not detect vehicles. Whether Off from this field does the same is untested, so check that your radar still detects vehicles before relying on it.
 
 ## Install
 
